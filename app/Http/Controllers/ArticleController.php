@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use File;
 
 class ArticleController extends Controller
 {
@@ -26,8 +28,15 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        $article = Article::create($request->all());
-        return $article;
+       
+        $datos_articulo = request()->except('image');
+        if($request->hasFile('image'))
+        {
+            $datos_articulo['image_path'] = $request->file('image')->store('uploads','public');
+        }
+        $article = Article::insert($datos_articulo);
+        return $datos_articulo;
+       
     }
 
     /**
@@ -51,7 +60,20 @@ class ArticleController extends Controller
     public function update(Request $request, Article $article, $id)
     {
         $article_updated = Article::find($id);
-        $article_updated ->update($request->all());
+
+        if($request->hasFile('image'))
+        {
+            $image_path = $request->file('image')->store('uploads','public');
+
+            $request->merge([
+                'image_path' => $image_path,
+            ]);
+
+            Storage::delete("public\\".$article_updated["image_path"]);
+            
+        }
+    
+        $article_updated ->update($request->except('image','_method'));
         return $article_updated;
     }
 
@@ -69,7 +91,13 @@ class ArticleController extends Controller
     public function delete(Request $request, $id)
     {
         $article_deleted = Article::find($id);
+        Storage::delete("public\\".$article_deleted["image_path"]);
         $article_deleted -> delete($id);
         return $article_deleted;
+    }
+
+    public function download(Request $request, $file_name)
+    {
+        return Storage::download("public\\uploads\\".$file_name);
     }
 }

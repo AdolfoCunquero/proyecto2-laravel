@@ -9,6 +9,7 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = ["category_name","is_active"];
+    protected $primaryKey = "category_id";
 
     public function Category()
     {

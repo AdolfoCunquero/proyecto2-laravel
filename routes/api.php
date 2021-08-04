@@ -46,4 +46,4 @@ Route::put('/orderDetail/{id}', [OrderDetailController::class, 'update']);
 Route::delete('/orderDetail/{id}', [OrderDetailController::class, 'delete']);
 
 
-Route::post('/uploadFile', [CategoryController::class, 'upload_file']);
+Route::get('/uploads/{file_name}', [ArticleController::class, 'download']);

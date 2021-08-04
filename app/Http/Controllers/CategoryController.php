@@ -93,11 +93,4 @@ class CategoryController extends Controller
     {
         //
     }
-
-    public function upload_file(Request $request)
-    {
-        $file = $request->file('image');
-        return $file->getClientOriginalName();
-        
-    }
 }
