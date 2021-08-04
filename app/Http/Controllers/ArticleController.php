@@ -100,7 +100,7 @@ class ArticleController extends Controller
     public function download(Request $request, $file_name)
     {
         //return Storage::download("public\\uploads\\".$file_name);
-        $path = storage_path('app\\public\\uploads\\' . $file_name);
+        $path = storage_path('app/public/uploads/' . $file_name);
 
         //return $path;
 
