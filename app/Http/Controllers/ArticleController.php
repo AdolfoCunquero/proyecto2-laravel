@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use File;
+use Response;
 
 class ArticleController extends Controller
 {
@@ -98,6 +99,19 @@ class ArticleController extends Controller
 
     public function download(Request $request, $file_name)
     {
-        return Storage::download("public\\uploads\\".$file_name);
+        //return Storage::download("public\\uploads\\".$file_name);
+        $path = storage_path('app\\public\\uploads\\' . $file_name);
+
+        //return $path;
+
+        if (!File::exists($path)) 
+        {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
     }
 }
