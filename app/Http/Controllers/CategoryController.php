@@ -18,6 +18,12 @@ class CategoryController extends Controller
         return $cateogries;
     }
 
+    public function getCategoryActive()
+    {
+        $cateogries = Category::select("category_name","category_id")->where('is_active','=',1)->get();
+        return $cateogries;
+    }
+
     /**
      * Show the form for creating a new resource.
      *

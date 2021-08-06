@@ -22,6 +22,28 @@ class ArticleController extends Controller
         return $articles;
     }
 
+    public function getArticleActive($category_id)
+    {
+        if($category_id == 0)
+        {
+            return Article::join("categories","categories.category_id","articles.category_id")
+                                ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path")
+                                ->where("categories.is_active","=","1")
+                                ->where("articles.is_active","=","1")
+                                ->get();
+        }
+        else
+        {
+            return Article::join("categories","categories.category_id","articles.category_id")
+                            ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path")
+                            ->where("categories.is_active","=","1")
+                            ->where("articles.is_active","=","1")
+                            ->where("categories.category_id","=",$category_id)
+                            ->get();
+        }
+
+    }
+
     /**
      * Store a newly created resource in storage.
      *

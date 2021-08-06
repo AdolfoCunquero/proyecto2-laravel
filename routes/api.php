@@ -21,11 +21,15 @@ use App\Http\Controllers\OrderDetailController;
 
 /*Route::apiResource("category","CategoryController");*/
 Route::get('/category', [CategoryController::class, 'index']);
+Route::get('/categoryActive', [CategoryController::class, 'getCategoryActive']);
+
 Route::post('/category', [CategoryController::class, 'store']);
 Route::put('/category/{id}', [CategoryController::class, 'update']);
 Route::delete('/category/{id}', [CategoryController::class, 'delete']);
 
 Route::get('/article', [ArticleController::class, 'index']);
+Route::get('/articleActive/{category_id}', [ArticleController::class, 'getArticleActive']);
+
 Route::post('/article', [ArticleController::class, 'store']);
 Route::put('/article/{id}', [ArticleController::class, 'update']);
 Route::delete('/article/{id}', [ArticleController::class, 'delete']);
