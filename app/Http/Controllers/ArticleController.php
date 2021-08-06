@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use File;
 use Response;
+use DateTime;
 
 class ArticleController extends Controller
 {
@@ -33,10 +34,16 @@ class ArticleController extends Controller
         $datos_articulo = request()->except('image');
         if($request->hasFile('image'))
         {
-            $datos_articulo['image_path'] = $request->file('image')->store('uploads','public');
+            //$datos_articulo['image_path'] = $request->file('image')->store('uploads','public');
+            $fecha = new DateTime();
+            $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
+            $new_filename = "img-".$fecha->getTimestamp().".".pathinfo($filename, PATHINFO_EXTENSION);
+            $file->storeAs('products/', $new_filename, 's3');
+            $datos_articulo['image_path'] = $new_filename;
         }
-        $article = Article::insert($datos_articulo);
-        return $datos_articulo;
+        $article = Article::create($datos_articulo);
+        return $article;
        
     }
 
@@ -64,14 +71,18 @@ class ArticleController extends Controller
 
         if($request->hasFile('image'))
         {
-            $image_path = $request->file('image')->store('uploads','public');
+            $fecha = new DateTime();
+            $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
+            $new_filename = "img-".$fecha->getTimestamp().".".pathinfo($filename, PATHINFO_EXTENSION);
+            $file->storeAs('products/', $new_filename, 's3');
+            $datos_articulo['image_path'] = $new_filename;
 
             $request->merge([
-                'image_path' => $image_path,
+                'image_path' => $new_filename,
             ]);
 
-            Storage::delete("public\\".$article_updated["image_path"]);
-            
+            Storage::disk('s3')->delete('products/'.$article_updated["image_path"]);
         }
     
         $article_updated ->update($request->except('image','_method'));
@@ -92,26 +103,26 @@ class ArticleController extends Controller
     public function delete(Request $request, $id)
     {
         $article_deleted = Article::find($id);
-        Storage::delete("public\\".$article_deleted["image_path"]);
+        Storage::disk('s3')->delete('products/'.$article_deleted["image_path"]);
         $article_deleted -> delete($id);
         return $article_deleted;
     }
 
     public function download(Request $request, $file_name)
     {
-        //return Storage::download("public\\uploads\\".$file_name);
-        $path = storage_path('app/public/uploads/' . $file_name);
-
-        //return $path;
+        // //return Storage::download("public\\uploads\\".$file_name);
+        // $path = storage_path('app/public/uploads/' . $file_name);
 
         // if (!File::exists($path)) 
         // {
         //     abort(404);
         // }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        $response = Response::make($file, 200);
-        $response->header("Content-Type", $type);
-        return $response;
+        // $file = File::get($path);
+        // $type = File::mimeType($path);
+        // $response = Response::make($file, 200);
+        // $response->header("Content-Type", $type);
+        // return $response;
+
+        return Storage::disk(name:'s3')->response(path:'products/'.$file_name);
     }
 }
