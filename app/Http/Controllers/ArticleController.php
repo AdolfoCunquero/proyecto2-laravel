@@ -27,7 +27,7 @@ class ArticleController extends Controller
         if($category_id == 0)
         {
             return Article::join("categories","categories.category_id","articles.category_id")
-                                ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path")
+                                ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path","articles.stock")
                                 ->where("categories.is_active","=","1")
                                 ->where("articles.is_active","=","1")
                                 ->get();
@@ -35,13 +35,23 @@ class ArticleController extends Controller
         else
         {
             return Article::join("categories","categories.category_id","articles.category_id")
-                            ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path")
+                            ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path","articles.stock")
                             ->where("categories.is_active","=","1")
                             ->where("articles.is_active","=","1")
                             ->where("categories.category_id","=",$category_id)
                             ->get();
         }
 
+    }
+
+    public function searchArticle($article_search)
+    {
+        return Article::join("categories","categories.category_id","articles.category_id")
+        ->select('articles.article_id',"articles.category_id","articles.article_name","articles.description","articles.price","articles.image_path","articles.stock")
+        ->where("categories.is_active","=","1")
+        ->where("articles.is_active","=","1")
+        ->where("articles.article_name","like","%".$article_search."%")
+        ->get();
     }
 
     /**

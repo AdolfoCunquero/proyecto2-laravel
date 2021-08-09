@@ -29,6 +29,7 @@ Route::delete('/category/{id}', [CategoryController::class, 'delete']);
 
 Route::get('/article', [ArticleController::class, 'index']);
 Route::get('/articleActive/{category_id}', [ArticleController::class, 'getArticleActive']);
+Route::get('/searchArticle/{article_search}', [ArticleController::class, 'searchArticle']);
 
 Route::post('/article', [ArticleController::class, 'store']);
 Route::put('/article/{id}', [ArticleController::class, 'update']);
