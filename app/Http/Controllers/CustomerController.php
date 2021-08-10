@@ -18,6 +18,11 @@ class CustomerController extends Controller
          
     }
 
+    public function getCustomerActive()
+    {
+        return  Customer::select("customer_id","first_name","last_name")->where('is_active','=',1)->get();
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -48,7 +53,7 @@ class CustomerController extends Controller
      * @param  \App\Models\Customer  $customer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Customer $customer)
+    public function update(Request $request, Customer $customer, $id)
     {
         $customer_updated = Customer::find($id);
         $customer_updated ->update($request->all());

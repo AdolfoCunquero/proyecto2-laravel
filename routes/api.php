@@ -7,6 +7,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderDetailController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,11 @@ use App\Http\Controllers\OrderDetailController;
 */
 
 /*Route::apiResource("category","CategoryController");*/
+
+Route::middleware('auth:sanctum')->group( function () {
+    
+});
+
 Route::get('/category', [CategoryController::class, 'index']);
 Route::get('/categoryActive', [CategoryController::class, 'getCategoryActive']);
 
@@ -36,6 +42,8 @@ Route::put('/article/{id}', [ArticleController::class, 'update']);
 Route::delete('/article/{id}', [ArticleController::class, 'delete']);
 
 Route::get('/customer', [CustomerController::class, 'index']);
+Route::get('/customerActive', [CustomerController::class, 'getCustomerActive']);
+
 Route::post('/customer', [CustomerController::class, 'store']);
 Route::put('/customer/{id}', [CustomerController::class, 'update']);
 Route::delete('/customer/{id}', [CustomerController::class, 'delete']);
@@ -52,3 +60,7 @@ Route::delete('/orderDetail/{id}', [OrderDetailController::class, 'delete']);
 
 
 Route::get('/images/{file_name}', [ArticleController::class, 'download']);
+
+
+Route::post('/register', [UserController::class, 'signup']);
+Route::post('/signin', [UserController::class, 'signin']);

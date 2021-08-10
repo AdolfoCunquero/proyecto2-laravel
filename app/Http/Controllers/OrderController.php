@@ -14,7 +14,10 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Order::all();
+        //return Order::all();
+        return Order::join("customers","customers.customer_id","orders.customer_id")
+                        ->select("orders.order_id","orders.customer_id","orders.order_date","orders.is_active","customers.first_name","customers.last_name")
+                        ->get();
     }
 
     /**
