@@ -18,9 +18,9 @@ class OrderDetailController extends Controller
         //return OrderDetail::where('order_id','like', $order_id)->get();
         //return OrderDetail::join('orders','orders.order_id','order_details.order_id')->get();
         return OrderDetail::join('articles','articles.article_id','order_details.article_id')
-                            ->select("order_details.order_detail_id","order_details.order_id","articles.article_id","articles.article_name","articles.description","order_details.unit_price","order_details.quantity")
+                            ->select("order_details.order_detail_id","order_details.order_id","articles.article_id","articles.article_name","articles.description","order_details.unit_price","order_details.quantity","order_details.is_active")
                             ->where('order_details.order_id','=', $order_id)
-                            ->where('order_details.is_active','=','1')
+                            //->where('order_details.is_active','=','1')
                             ->get();
         
     }
