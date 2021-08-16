@@ -76,7 +76,7 @@ class ArticleController extends Controller
             $file = $request->file('image');
             $filename = $file->getClientOriginalName();
             $new_filename = "img-".$fecha->getTimestamp().".".pathinfo($filename, PATHINFO_EXTENSION);
-            $file->storeAs('products/', $new_filename, 'local');
+            $file->storeAs('products/', $new_filename, 's3');
             $datos_articulo['image_path'] = $new_filename;
         }
         $article = Article::create($datos_articulo);
@@ -113,14 +113,14 @@ class ArticleController extends Controller
             $filename = $file->getClientOriginalName();
             $new_filename = "img-".$fecha->getTimestamp().".".pathinfo($filename, PATHINFO_EXTENSION);
             
-            $file->storeAs('products/', $new_filename, 'local');
+            $file->storeAs('products/', $new_filename, 's3');
             $datos_articulo['image_path'] = $new_filename;
 
             $request->merge([
                 'image_path' => $new_filename,
             ]);
 
-            Storage::disk('local')->delete('products/'.$article_updated["image_path"]);
+            Storage::disk('s3')->delete('products/'.$article_updated["image_path"]);
         }
     
         $article_updated ->update($request->except('image','_method'));
@@ -141,7 +141,7 @@ class ArticleController extends Controller
     public function delete(Request $request, $id)
     {
         $article_deleted = Article::find($id);
-        Storage::disk('local')->delete('products/'.$article_deleted["image_path"]);
+        Storage::disk('s3')->delete('products/'.$article_deleted["image_path"]);
         $article_deleted -> delete($id);
         return $article_deleted;
     }
@@ -160,6 +160,6 @@ class ArticleController extends Controller
         // $response->header("Content-Type", $type);
         // return $response;
 
-        return Storage::disk(name:'local')->response(path:'products/'.$file_name);
+        return Storage::disk(name:'s3')->response(path:'products/'.$file_name);
     }
 }
